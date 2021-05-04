@@ -1,0 +1,11 @@
+{
+  "name": "dapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Schabaani/dapp-learned.git",
+  "author": "Amish <a.shabani@megagroup.biz>",
+  "license": "MIT",
+  "dependencies": {
+    "crypto-js": "^4.0.0"
+  }
+}
