@@ -1,7 +1,7 @@
 const SHA256 = require("crypto-js/sha256");
 
 class Transaction {
-  constructor(toAddress, fromAddress, amount) {
+  constructor(fromAddress, toAddress, amount) {
     this.toAddress = toAddress;
     this.fromAddress = fromAddress;
     this.amount = amount;
@@ -9,8 +9,9 @@ class Transaction {
 }
 
 class Block {
-  constructor(timestamp, data, previousHash = "") {
+  constructor(timestamp, transactions, data = "", previousHash = "") {
     this.timestamp = timestamp;
+    this.transactions = transactions;
     this.data = data;
     this.previousHash = previousHash;
     this.nonce = 0;
@@ -22,7 +23,8 @@ class Block {
       this.index +
         this.previousHash +
         this.timestamp +
-        JSON.stringify(this.data + this.nonce).toString()
+        JSON.stringify(this.data) +
+        this.nonce
     ).toString();
   };
 
@@ -34,7 +36,7 @@ class Block {
       this.hash = this.calculateHash();
     }
 
-    console.log("block mined...");
+    console.log("block mined: ", this.hash);
   };
 }
 
@@ -47,7 +49,7 @@ class BlockChain {
   }
 
   createGenesisBlock = () => {
-    return new Block("04/04/2021", "Genesis Block", "0");
+    return new Block("04/04/2021", [], "Genesis Block", "0");
   };
 
   getLatestBlock = () => {
@@ -69,14 +71,16 @@ class BlockChain {
 
   getBalanceOfAddress = (address) => {
     let balance = 0;
-    for (const block in chain) {
-      for (const trans in block.transaction) {
-        if (trans.fromAddress === address) {
-          balance -= trans.amount;
+
+    for (const block in this.chain) {
+      for (const trans in this.chain[block].transactions) {
+        const transaction = this.chain[block].transactions[trans];
+        if (transaction.fromAddress === address) {
+          balance -= transaction.amount;
         }
 
-        if (trans.toAddress === address) {
-          balance += trans.amount;
+        if (transaction.toAddress === address) {
+          balance += transaction.amount;
         }
       }
     }
@@ -96,3 +100,22 @@ class BlockChain {
 }
 
 let ourCrypto = new BlockChain();
+
+ourCrypto.createTransaction(new Transaction("address1", "address2", 100));
+ourCrypto.createTransaction(new Transaction("address2", "address1", 50));
+
+console.log("\n Starting the miner....");
+ourCrypto.minePendingTransactions("our-address");
+
+console.log(
+  "\n our balance is:: ",
+  ourCrypto.getBalanceOfAddress("our-address")
+);
+
+console.log("\n Starting second the miner....");
+ourCrypto.minePendingTransactions("our-address");
+
+console.log(
+  "\n our balance is:: ",
+  ourCrypto.getBalanceOfAddress("our-address")
+);
