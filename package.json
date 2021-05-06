@@ -5,7 +5,15 @@
   "repository": "https://github.com/Schabaani/dapp-learned.git",
   "author": "Amish <a.shabani@megagroup.biz>",
   "license": "MIT",
+  "scripts": {
+    "test": "mocha"
+  },
   "dependencies": {
-    "crypto-js": "^4.0.0"
+    "crypto-js": "^4.0.0",
+    "ganache-cli": "^6.12.2",
+    "mocha": "^8.3.2",
+    "solc": "0.4.21",
+    "truffle-hdwallet-provider": "^1.0.17",
+    "web3": "1.0.0-beta.26"
   }
 }
